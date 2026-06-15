@@ -24,5 +24,9 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin',
             'is_active' => 1,
         ]);
+
+        $this->call([
+            DoctorSeeder::class,
+        ]);
     }
 }
