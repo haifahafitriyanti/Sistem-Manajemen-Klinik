@@ -165,10 +165,12 @@
                                     @endif
 
                                 @elseif($apt->status === 'in_progress')
+                                    @if(in_array(auth()->user()->role, ['admin', 'doctor']))
                                     <a href="{{ route('appointments.examine', $apt->id) }}"
                                         class="w-full px-3 py-1.5 text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors text-center">
                                         Periksa
                                     </a>
+                                    @endif
                                     <button wire:click="initCancel({{ $apt->id }})"
                                         class="w-full px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors text-center">
                                         Batal
