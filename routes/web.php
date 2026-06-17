@@ -5,6 +5,8 @@ use App\Livewire\Doctor\DoctorIndex;
 use App\Livewire\Doctor\DoctorSchedule;
 use App\Livewire\Medical\MedicalRecordForm;
 use App\Livewire\Medical\PatientHistory;
+use App\Livewire\POS\InvoiceIndex;
+use App\Livewire\POS\InvoicePayment;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
@@ -19,6 +21,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/appointments/{appointmentId}/examine', MedicalRecordForm::class)->name('appointments.examine');
 
     Route::get('/patients/{patientId}/history', PatientHistory::class)->name('patients.history');
+
+    Route::get('/pos', InvoiceIndex::class)->name('pos.index');
+    Route::get('/pos/{invoiceId}/pay', InvoicePayment::class)->name('pos.pay');
 });
 
 require __DIR__.'/settings.php';

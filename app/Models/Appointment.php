@@ -65,12 +65,36 @@ class Appointment extends Model
     }
 
     /**
-     * Mark this appointment as done.
-     * Invoice creation hook will be added in the billing module.
+     * Get the invoice for this appointment.
+     */
+    public function invoice(): HasOne
+    {
+        return $this->hasOne(Invoice::class);
+    }
+
+    /**
+     * Mark this appointment as done and auto-create an invoice if one doesn't exist.
      */
     public function markAsDone(): bool
     {
-        return $this->update(['status' => 'done']);
+        $result = $this->update(['status' => 'done']);
+
+        if (! $this->invoice()->exists()) {
+            $this->loadMissing('doctor');
+
+            Invoice::create([
+                'invoice_number' => Invoice::generateInvoiceNumber(),
+                'appointment_id' => $this->id,
+                'cashier_id' => null,
+                'subtotal' => $this->doctor->consultation_fee,
+                'discount' => 0,
+                'total_amount' => $this->doctor->consultation_fee,
+                'payment_method' => 'cash',
+                'payment_status' => 'unpaid',
+            ]);
+        }
+
+        return $result;
     }
 
     /**
