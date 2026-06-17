@@ -1,7 +1,6 @@
 <?php
 
 use App\Livewire\Appointment\AppointmentIndex;
-use App\Livewire\Dashboard;
 use App\Livewire\Doctor\DoctorIndex;
 use App\Livewire\Doctor\DoctorSchedule;
 use App\Livewire\Medical\MedicalRecordForm;
@@ -13,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 Route::view('/', 'welcome')->name('home');
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('dashboard', Dashboard::class)->name('dashboard');
+    Route::view('dashboard', 'dashboard')->name('dashboard');
 
     Route::get('/doctors', DoctorIndex::class)->name('doctors.index');
     Route::get('/doctors/{id}/schedules', DoctorSchedule::class)->name('doctors.schedules');
