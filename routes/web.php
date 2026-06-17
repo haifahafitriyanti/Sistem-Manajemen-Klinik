@@ -27,4 +27,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/pos/{invoiceId}/pay', InvoicePayment::class)->name('pos.pay');
 });
 
+Route::get('/test-doctor-form-view', function () {
+    return view('livewire.doctor.doctor-form');
+});
+
 require __DIR__.'/settings.php';
