@@ -1,6 +1,3 @@
-@extends('layouts.app')
-
-@section('content')
 <div class="space-y-6">
     {{-- Page Header --}}
     <div class="flex items-center justify-between">
@@ -149,28 +146,27 @@
             </tbody>
         </table>
     </div>
-</div>
 
-{{-- Modal Form --}}
-@if($showForm)
-    <div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm"
-        x-data x-on:keydown.escape.window="$wire.closeForm()">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto"
-            x-on:close-doctor-form.window="$wire.call('closeForm')">
-            <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-                <h2 class="text-lg font-semibold text-slate-800">
-                    {{ $editingDoctorId ? 'Edit Dokter' : 'Tambah Dokter' }}
-                </h2>
-                <button wire:click="closeForm" class="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-            <div class="p-6">
-                @livewire('doctor.doctor-form', ['doctorId' => $editingDoctorId], key('doctor-form-' . ($editingDoctorId ?? 'new')))
+    {{-- Modal Form --}}
+    @if($showForm)
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm"
+            x-data x-on:keydown.escape.window="$wire.closeForm()">
+            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto"
+                x-on:close-doctor-form.window="$wire.closeForm()">
+                <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+                    <h2 class="text-lg font-semibold text-slate-800">
+                        {{ $editingDoctorId ? 'Edit Dokter' : 'Tambah Dokter' }}
+                    </h2>
+                    <button wire:click="closeForm" class="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="p-6">
+                    @livewire('doctor.doctor-form', ['doctorId' => $editingDoctorId], key('doctor-form-' . ($editingDoctorId ?? 'new')))
+                </div>
             </div>
         </div>
-    </div>
-@endif
-@endsection
+    @endif
+</div>
