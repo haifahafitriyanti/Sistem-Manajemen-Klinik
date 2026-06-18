@@ -1,6 +1,3 @@
-@extends('layouts.app')
-
-@section('content')
 <div wire:poll.10s class="space-y-6">
     {{-- Page Header --}}
     <div class="flex items-center justify-between">
@@ -81,7 +78,7 @@
         <table class="w-full text-sm">
             <thead>
                 <tr class="bg-slate-50 border-b border-slate-200">
-                    <th class="px-5 py-3 text-center font-semibold text-slate-600 w-12">#</th>
+                    <th class="px-5 py-3 text-center font-semibold text-slate-600 w-12">No.</th>
                     <th class="px-5 py-3 text-left font-semibold text-slate-600">Pasien</th>
                     <th class="px-5 py-3 text-left font-semibold text-slate-600">Dokter</th>
                     <th class="px-5 py-3 text-center font-semibold text-slate-600">Slot</th>
@@ -221,26 +218,25 @@
         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
         Data diperbarui otomatis setiap 10 detik
     </div>
-</div>
 
-{{-- Modal Form --}}
-@if($showForm)
-    <div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm"
-        x-data x-on:keydown.escape.window="$wire.closeForm()">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-xl mx-4 max-h-[92vh] overflow-y-auto"
-            x-on:close-appointment-form.window="$wire.call('closeForm')">
-            <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-                <h2 class="text-lg font-semibold text-slate-800">Tambah Appointment</h2>
-                <button wire:click="closeForm" class="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-            <div class="p-6">
-                @livewire('appointment.appointment-form', key('appointment-form-new'))
+    {{-- Modal Form --}}
+    @if($showForm)
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm"
+            x-data x-on:keydown.escape.window="$wire.closeForm()">
+            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-xl mx-4 max-h-[92vh] overflow-y-auto"
+                x-on:close-appointment-form.window="$wire.call('closeForm')">
+                <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+                    <h2 class="text-lg font-semibold text-slate-800">Tambah Appointment</h2>
+                    <button wire:click="closeForm" class="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="p-6">
+                    @livewire('appointment.appointment-form', key('appointment-form-new'))
+                </div>
             </div>
         </div>
-    </div>
-@endif
-@endsection
+    @endif
+</div>

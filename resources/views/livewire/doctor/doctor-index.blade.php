@@ -32,7 +32,7 @@
         <table class="w-full text-sm">
             <thead>
                 <tr class="bg-slate-50 border-b border-slate-200">
-                    <th class="px-6 py-3 text-left font-semibold text-slate-600">#</th>
+                    <th class="px-6 py-3 text-left font-semibold text-slate-600">No.</th>
                     <th class="px-6 py-3 text-left font-semibold text-slate-600">Nama</th>
                     <th class="px-6 py-3 text-left font-semibold text-slate-600">Spesialisasi</th>
                     <th class="px-6 py-3 text-right font-semibold text-slate-600">Tarif Konsultasi</th>

@@ -1,6 +1,3 @@
-@extends('layouts.app')
-
-@section('content')
 <div class="space-y-6">
     {{-- Page Header --}}
     <div class="flex items-center gap-4">
@@ -143,4 +140,3 @@
         </div>
     </div>
 </div>
-@endsection
