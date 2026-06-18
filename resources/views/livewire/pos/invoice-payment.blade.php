@@ -1,6 +1,3 @@
-@extends('layouts.app')
-
-@section('content')
 <div class="max-w-2xl mx-auto space-y-6">
 
     {{-- Header --}}
@@ -180,4 +177,3 @@
         </div>
     @endif
 </div>
-@endsection

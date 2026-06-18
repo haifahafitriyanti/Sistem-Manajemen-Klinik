@@ -1,6 +1,3 @@
-@extends('layouts.app')
-
-@section('content')
 <div class="space-y-6">
 
     {{-- Flash --}}
@@ -44,6 +41,37 @@
             {{-- Filter tanggal --}}
             <input wire:model.live="filterDate" type="date"
                 class="px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+        </div>
+    </div>
+
+    {{-- Export Excel --}}
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
+        <p class="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">Export ke Excel</p>
+        <div class="flex flex-col sm:flex-row items-end gap-3">
+            <div class="flex flex-col gap-1">
+                <label class="text-xs text-slate-500">Dari Tanggal</label>
+                <input wire:model="exportDateFrom" type="date"
+                    class="px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+            </div>
+            <div class="flex flex-col gap-1">
+                <label class="text-xs text-slate-500">Sampai Tanggal</label>
+                <input wire:model="exportDateTo" type="date"
+                    class="px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+            </div>
+            <button wire:click="exportExcel"
+                wire:loading.attr="disabled"
+                class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700 disabled:opacity-60 transition-colors">
+                <svg wire:loading.remove wire:target="exportExcel" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+                </svg>
+                <svg wire:loading wire:target="exportExcel" class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                </svg>
+                <span wire:loading.remove wire:target="exportExcel">Export Excel</span>
+                <span wire:loading wire:target="exportExcel">Mengexport…</span>
+            </button>
         </div>
     </div>
 
@@ -127,4 +155,3 @@
         @endif
     </div>
 </div>
-@endsection

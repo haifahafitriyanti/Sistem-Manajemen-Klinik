@@ -2,9 +2,11 @@
 
 namespace App\Livewire\POS;
 
+use App\Exports\InvoicesExport;
 use App\Models\Invoice;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Maatwebsite\Excel\Facades\Excel;
 
 class InvoiceIndex extends Component
 {
@@ -15,6 +17,16 @@ class InvoiceIndex extends Component
     public string $filterStatus = '';
 
     public string $filterDate = '';
+
+    public string $exportDateFrom = '';
+
+    public string $exportDateTo = '';
+
+    public function mount(): void
+    {
+        $this->exportDateFrom = now()->startOfMonth()->format('Y-m-d');
+        $this->exportDateTo = now()->format('Y-m-d');
+    }
 
     /**
      * Reset pagination when filters change.
@@ -32,6 +44,19 @@ class InvoiceIndex extends Component
     public function updatedFilterDate(): void
     {
         $this->resetPage();
+    }
+
+    /**
+     * Export invoices to Excel.
+     */
+    public function exportExcel(): mixed
+    {
+        $filename = 'invoices_'.$this->exportDateFrom.'_to_'.$this->exportDateTo.'.xlsx';
+
+        return Excel::download(
+            new InvoicesExport($this->exportDateFrom, $this->exportDateTo, $this->filterStatus ?: null),
+            $filename,
+        );
     }
 
     /**

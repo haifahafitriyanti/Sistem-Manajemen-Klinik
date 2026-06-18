@@ -166,16 +166,18 @@ test('PatientHistory shows appointments for given patient_id', function () {
         ->assertDontSee($apt2->patient_name);
 });
 
-test('PatientHistory toggling expands accordion', function () {
+test('PatientHistory renders accordion detail content in the DOM', function () {
     actingAs(medAdmin());
 
-    $apt = Appointment::factory()->done()->create(['patient_id' => 'KTP-ACC', 'date' => today()]);
+    $apt = Appointment::factory()->done()->create([
+        'patient_id' => 'KTP-ACC',
+        'date' => today(),
+        'complaint' => 'Sakit kepala',
+    ]);
 
     Livewire::test(PatientHistory::class, ['patientId' => 'KTP-ACC'])
-        ->call('toggle', $apt->id)
-        ->assertSet("expanded.{$apt->id}", true)
-        ->call('toggle', $apt->id)
-        ->assertSet("expanded.{$apt->id}", false);
+        ->assertSee($apt->patient_name)
+        ->assertSee('Sakit kepala');
 });
 
 // ─── Appointment model ────────────────────────────────────────────────────────

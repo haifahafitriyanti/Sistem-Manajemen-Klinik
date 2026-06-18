@@ -9,9 +9,6 @@ class PatientHistory extends Component
 {
     public string $patientId;
 
-    /** @var array<int, bool> Maps appointment ID → expanded state */
-    public array $expanded = [];
-
     /**
      * Mount the component.
      */
@@ -22,14 +19,6 @@ class PatientHistory extends Component
         }
 
         $this->patientId = $patientId;
-    }
-
-    /**
-     * Toggle accordion row expansion.
-     */
-    public function toggle(int $appointmentId): void
-    {
-        $this->expanded[$appointmentId] = ! ($this->expanded[$appointmentId] ?? false);
     }
 
     /**
