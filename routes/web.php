@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\Appointment\AppointmentIndex;
+use App\Livewire\Dashboard;
 use App\Livewire\Doctor\DoctorIndex;
 use App\Livewire\Doctor\DoctorSchedule;
 use App\Livewire\Medical\MedicalRecordForm;
@@ -8,13 +9,14 @@ use App\Livewire\Medical\PatientHistory;
 use App\Livewire\Medical\PatientSearch;
 use App\Livewire\POS\InvoiceIndex;
 use App\Livewire\POS\InvoicePayment;
+use App\Livewire\Report\ReportIndex;
 use App\Livewire\User\UserIndex;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
 
 Route::middleware(['auth'])->group(function () {
-    Route::view('dashboard', 'dashboard')->name('dashboard');
+    Route::get('dashboard', Dashboard::class)->name('dashboard');
 
     Route::get('/doctors', DoctorIndex::class)->name('doctors.index');
     Route::get('/doctors/{id}/schedules', DoctorSchedule::class)->name('doctors.schedules');
@@ -29,6 +31,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/pos/{invoiceId}/pay', InvoicePayment::class)->name('pos.pay');
 
     Route::get('/users', UserIndex::class)->name('users.index');
+
+    Route::get('/reports', ReportIndex::class)->name('reports.index');
 });
 
 Route::get('/test-doctor-form-view', function () {
