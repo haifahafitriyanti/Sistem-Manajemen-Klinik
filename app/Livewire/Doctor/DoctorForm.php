@@ -78,9 +78,12 @@ class DoctorForm extends Component
     {
         $this->validate();
 
+        $category = \App\Models\DoctorCategory::where('name', $this->specialization)->first();
+
         $data = [
             'name' => $this->name,
             'specialization' => $this->specialization,
+            'doctor_category_id' => $category ? $category->id : null,
             'license_number' => $this->license_number,
             'phone' => $this->phone,
             'consultation_fee' => $this->consultation_fee,

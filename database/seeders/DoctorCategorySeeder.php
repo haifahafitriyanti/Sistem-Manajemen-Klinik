@@ -41,6 +41,16 @@ class DoctorCategorySeeder extends Seeder
                 'description' => 'Menangani gangguan sistem saraf seperti stroke, migrain, dan epilepsi.',
                 'icon'        => 'brain',
             ],
+            [
+                'name'        => 'Spesialis Mata',
+                'description' => 'Dokter spesialis untuk masalah penglihatan dan penyakit pada mata.',
+                'icon'        => 'eye',
+            ],
+            [
+                'name'        => 'Spesialis Gigi',
+                'description' => 'Dokter spesialis untuk perawatan kesehatan gigi, gusi, dan mulut.',
+                'icon'        => 'smile',
+            ],
         ];
 
         foreach ($categories as $cat) {

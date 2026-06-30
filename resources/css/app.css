@@ -45,6 +45,26 @@
     ::file-selector-button {
         border-color: var(--color-gray-200, currentColor);
     }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+    }
+    ::-webkit-scrollbar-track {
+        background: #f8fafc;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: #2C5EAD;
+        border-radius: 5px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background: #1e40af;
+    }
+    * {
+        scrollbar-width: thin;
+        scrollbar-color: #2C5EAD #f8fafc;
+    }
 }
 
 [data-flux-field]:not(ui-radio, ui-checkbox) {
