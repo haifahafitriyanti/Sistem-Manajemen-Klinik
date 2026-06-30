@@ -53,16 +53,26 @@
         {{-- Photo Upload --}}
         <div>
             <label class="block text-sm font-medium text-slate-700 mb-1.5">Foto Dokter</label>
-            @if($existingPhoto)
+
+            {{-- Preview: new photo chosen (not yet saved) --}}
+            @if($newPhoto)
                 <div class="mb-2 flex items-center gap-3">
-                    <img src="{{ Storage::url($existingPhoto) }}" alt="Foto saat ini"
+                    <img src="{{ $newPhoto->temporaryUrl() }}" alt="Foto baru"
+                        class="w-12 h-12 rounded-full object-cover border-2 border-indigo-300">
+                    <span class="text-xs text-indigo-500 font-medium">Foto baru dipilih — belum disimpan.</span>
+                </div>
+            {{-- Preview: existing photo from database --}}
+            @elseif($existingPhotoPath)
+                <div class="mb-2 flex items-center gap-3">
+                    <img src="{{ Storage::url($existingPhotoPath) }}" alt="Foto saat ini"
                         class="w-12 h-12 rounded-full object-cover border border-slate-200">
                     <span class="text-xs text-slate-400">Foto saat ini — upload baru untuk mengganti.</span>
                 </div>
             @endif
-            <input wire:model="photo" type="file" accept="image/*"
-                class="w-full text-sm text-slate-500 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 @error('photo') border border-red-400 rounded-lg bg-red-50 @enderror">
-            @error('photo')
+
+            <input wire:model.live="newPhoto" type="file" accept="image/*"
+                class="w-full text-sm text-slate-500 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 @error('newPhoto') border border-red-400 rounded-lg bg-red-50 @enderror">
+            @error('newPhoto')
                 <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
             @enderror
         </div>

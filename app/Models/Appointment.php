@@ -26,6 +26,7 @@ class Appointment extends Model
         'patient_name',
         'patient_id',
         'phone',
+        'email',
         'date',
         'time_slot',
         'complaint',

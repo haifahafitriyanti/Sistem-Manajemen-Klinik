@@ -7,30 +7,77 @@ use App\Http\Resources\DoctorResource;
 use App\Models\Appointment;
 use App\Models\Doctor;
 use App\Models\DoctorSchedule;
+use App\Traits\ApiResponds;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Carbon;
 
 class DoctorController extends Controller
 {
+    use ApiResponds;
+
     /**
      * GET /api/doctors
      *
-     * Return all active doctors with their active schedules.
+     * Return all active doctors with their active schedules and category.
+     * Optional filters: ?specialization={category-slug}, ?search={name}
      */
-    public function index(): AnonymousResourceCollection
+    public function index(Request $request): JsonResponse
     {
-        $doctors = Doctor::where('is_active', 1)
-            ->with(['schedules' => fn ($q) => $q->where('is_active', 1)->orderBy('day_of_week')])
-            ->orderBy('name')
-            ->get();
+        $query = Doctor::where('is_active', 1)
+            ->with([
+                'schedules' => fn ($q) => $q->where('is_active', 1)->orderBy('day_of_week'),
+                'category',
+            ])
+            ->orderBy('name');
 
-        return DoctorResource::collection($doctors);
+        // Filter by category slug (case-insensitive)
+        if ($request->filled('specialization')) {
+            $slug = strtolower($request->query('specialization'));
+            $query->whereHas('category', fn ($q) => $q->whereRaw('LOWER(slug) = ?', [$slug]));
+        }
+
+        // Search by name (case-insensitive, partial)
+        if ($request->filled('search')) {
+            $term = '%'.strtolower($request->query('search')).'%';
+            $query->whereRaw('LOWER(name) LIKE ?', [$term]);
+        }
+
+        $doctors = $query->get();
+
+        return $this->success(
+            DoctorResource::collection($doctors),
+            'Doctors retrieved successfully'
+        );
     }
 
     /**
-     * GET /api/doctors/{id}/slots?date=2026-06-15
+     * GET /api/doctors/{slug}
+     *
+     * Return full doctor profile by slug; 404 envelope if not found.
+     */
+    public function show(string $slug): JsonResponse
+    {
+        $doctor = Doctor::where('is_active', 1)
+            ->where('slug', $slug)
+            ->with([
+                'schedules' => fn ($q) => $q->where('is_active', 1)->orderBy('day_of_week'),
+                'category',
+            ])
+            ->first();
+
+        if (! $doctor) {
+            return $this->error('Dokter tidak ditemukan', 404);
+        }
+
+        return $this->success(
+            new DoctorResource($doctor),
+            'Doctor retrieved successfully'
+        );
+    }
+
+    /**
+     * GET /api/doctors/{id}/slots?date=YYYY-MM-DD
      *
      * Return available time slots for a doctor on a given date.
      */
@@ -44,7 +91,11 @@ class DoctorController extends Controller
         $date = $validated['date'];
 
         // Resolve doctor
-        $doctor = Doctor::where('is_active', 1)->findOrFail($id);
+        $doctor = Doctor::where('is_active', 1)->find($id);
+
+        if (! $doctor) {
+            return $this->error('Dokter tidak ditemukan', 404);
+        }
 
         // Map date to Indonesian day name (Senin, Selasa, …)
         $dayName = ucfirst(Carbon::parse($date)->locale('id')->dayName);
@@ -56,7 +107,7 @@ class DoctorController extends Controller
             ->first();
 
         if (! $schedule) {
-            return response()->json(['message' => 'Dokter tidak praktik pada hari ini'], 404);
+            return $this->error('Dokter tidak praktik pada hari ini', 404);
         }
 
         // Generate all slots from start_time to end_time with interval = slot_duration_minutes
@@ -75,17 +126,20 @@ class DoctorController extends Controller
                 ->exists();
 
             $slots[] = [
-                'time' => $time,
+                'time'      => $time,
                 'available' => ! $isBooked,
             ];
 
             $cursor->addMinutes($schedule->slot_duration_minutes);
         }
 
-        return response()->json([
-            'date' => $date,
-            'day' => $dayName,
-            'slots' => $slots,
-        ]);
+        return $this->success(
+            [
+                'date'  => $date,
+                'day'   => $dayName,
+                'slots' => $slots,
+            ],
+            'Slots retrieved successfully'
+        );
     }
 }

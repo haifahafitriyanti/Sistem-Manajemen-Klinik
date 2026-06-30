@@ -3,12 +3,22 @@
 namespace App\Livewire\Medical;
 
 use App\Models\Appointment;
-use Illuminate\Support\Collection;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class PatientSearch extends Component
 {
+    use WithPagination;
+
     public string $search = '';
+
+    /**
+     * Reset pagination when search changes.
+     */
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
 
     /**
      * Mount the component with role guard.
@@ -21,30 +31,6 @@ class PatientSearch extends Component
     }
 
     /**
-     * Get the live search results.
-     *
-     * @return Collection<int, object>
-     */
-    public function getResultsProperty(): Collection
-    {
-        if (trim($this->search) === '') {
-            return collect();
-        }
-
-        return Appointment::query()
-            ->whereNotNull('patient_id')
-            ->where(function ($q) {
-                $q->where('patient_name', 'like', '%'.$this->search.'%')
-                    ->orWhere('patient_id', 'like', '%'.$this->search.'%');
-            })
-            ->selectRaw('patient_id, patient_name, COUNT(*) as visit_count')
-            ->groupBy('patient_id', 'patient_name')
-            ->orderBy('patient_name')
-            ->limit(10)
-            ->get();
-    }
-
-    /**
      * Render the component.
      */
     public function render()
@@ -53,8 +39,23 @@ class PatientSearch extends Component
             abort(403);
         }
 
+        $query = Appointment::query()
+            ->whereNotNull('patient_id');
+
+        if (trim($this->search) !== '') {
+            $query->where(function ($q) {
+                $q->where('patient_name', 'like', '%'.$this->search.'%')
+                    ->orWhere('patient_id', 'like', '%'.$this->search.'%');
+            });
+        }
+
+        $results = $query->selectRaw('patient_id, MAX(patient_name) as patient_name, COUNT(*) as visit_count, MAX(date) as latest_visit')
+            ->groupBy('patient_id')
+            ->orderBy('latest_visit', 'desc')
+            ->paginate(10);
+
         return view('livewire.medical.patient-search', [
-            'results' => $this->results,
+            'results' => $results,
         ])->layout('layouts.app');
     }
 }

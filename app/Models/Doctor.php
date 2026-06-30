@@ -15,11 +15,15 @@ class Doctor extends Model
 
     protected $fillable = [
         'name',
+        'slug',
         'specialization',
         'license_number',
         'phone',
         'consultation_fee',
         'photo',
+        'bio',
+        'years_experience',
+        'doctor_category_id',
         'is_active',
     ];
 
@@ -33,7 +37,16 @@ class Doctor extends Model
         return [
             'consultation_fee' => 'float',
             'is_active' => 'boolean',
+            'years_experience' => 'integer',
         ];
+    }
+
+    /**
+     * Get the category this doctor belongs to.
+     */
+    public function category(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(DoctorCategory::class, 'doctor_category_id');
     }
 
     /**

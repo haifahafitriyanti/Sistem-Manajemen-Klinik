@@ -27,4 +27,16 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*'),
         );
+
+        // Wrap ValidationException in the standard API envelope for api/* routes
+        $exceptions->render(function (\Illuminate\Validation\ValidationException $e, Request $request) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $e->getMessage(),
+                    'data'    => null,
+                    'errors'  => $e->errors(),
+                ], 422);
+            }
+        });
     })->create();

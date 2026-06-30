@@ -3,6 +3,7 @@
 namespace App\Livewire\Doctor;
 
 use App\Models\Doctor;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -24,9 +25,17 @@ class DoctorForm extends Component
 
     public bool $is_active = true;
 
-    public $photo;
+    /**
+     * Receives the new file chosen by the user via wire:model.live.
+     * Will be a TemporaryUploadedFile when a file has been selected, null otherwise.
+     */
+    public $newPhoto = null;
 
-    public ?string $existingPhoto = null;
+    /**
+     * Stores the existing photo path string from the database.
+     * Used only for preview — never overwritten by a file upload.
+     */
+    public ?string $existingPhotoPath = null;
 
     /**
      * Get the validation rules.
@@ -40,7 +49,7 @@ class DoctorForm extends Component
             'phone' => 'nullable|string|max:20',
             'consultation_fee' => 'required|numeric|min:0',
             'is_active' => 'required|boolean',
-            'photo' => 'nullable|image|max:2048', // Max 2MB
+            'newPhoto' => 'nullable|image|max:2048',
         ];
     }
 
@@ -58,7 +67,7 @@ class DoctorForm extends Component
             $this->phone = $doctor->phone;
             $this->consultation_fee = (float) $doctor->consultation_fee;
             $this->is_active = (bool) $doctor->is_active;
-            $this->existingPhoto = $doctor->photo;
+            $this->existingPhotoPath = $doctor->photo;
         }
     }
 
@@ -78,10 +87,18 @@ class DoctorForm extends Component
             'is_active' => $this->is_active ? 1 : 0,
         ];
 
-        if ($this->photo) {
-            $photoPath = $this->photo->store('doctors', 'public');
-            $data['photo'] = $photoPath;
+        if ($this->newPhoto) {
+            // A new file was selected — store it and update the photo column.
+            $newPath = $this->newPhoto->store('doctors', 'public');
+            $data['photo'] = $newPath;
+
+            // Delete the old file to avoid orphaned files accumulating in storage.
+            if ($this->existingPhotoPath) {
+                Storage::disk('public')->delete($this->existingPhotoPath);
+            }
         }
+        // If $newPhoto is null, the 'photo' key is intentionally absent from $data
+        // so the existing path in the database is preserved unchanged.
 
         if ($this->doctorId) {
             $doctor = Doctor::findOrFail($this->doctorId);
@@ -91,7 +108,7 @@ class DoctorForm extends Component
         }
 
         $this->dispatch('doctor-saved');
-        $this->reset(['photo']);
+        $this->reset(['newPhoto']);
     }
 
     /**

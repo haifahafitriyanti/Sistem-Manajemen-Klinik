@@ -55,7 +55,7 @@ class InvoicePayment extends Component
     {
         return [
             'discount' => ['required', 'numeric', 'min:0', 'max:'.$this->invoice->subtotal],
-            'paymentMethod' => ['required', 'in:cash,transfer,debit,qris'],
+            'paymentMethod' => ['required', 'in:cash,transfer'],
             'paymentStatus' => ['required', 'in:partially_paid,fully_paid'],
             'notes' => ['nullable', 'string'],
         ];

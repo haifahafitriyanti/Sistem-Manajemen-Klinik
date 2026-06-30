@@ -75,10 +75,7 @@
 
         {{-- Show final amounts read-only --}}
         <div class="bg-white rounded-xl border border-slate-200 shadow-sm px-6 py-5 space-y-3">
-            <div class="flex justify-between text-sm">
-                <span class="text-slate-500">Diskon</span>
-                <span class="font-medium text-slate-700">Rp {{ number_format($invoice->discount, 0, ',', '.') }}</span>
-            </div>
+
             <div class="flex justify-between text-base font-bold border-t border-slate-100 pt-3">
                 <span class="text-slate-800">Total Dibayar</span>
                 <span class="text-emerald-700">Rp {{ number_format($invoice->total_amount, 0, ',', '.') }}</span>
@@ -100,24 +97,13 @@
                         class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"></textarea>
                 </div>
 
-                {{-- Diskon --}}
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Diskon (Rp)</label>
-                    <input wire:model.live="discount" type="number" min="0" max="{{ $invoice->subtotal }}" step="1000"
-                        class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 @error('discount') border-red-400 @enderror">
-                    @error('discount') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
-                </div>
-
                 {{-- Total dinamis --}}
                 <div class="bg-indigo-50 border border-indigo-100 rounded-xl px-5 py-4">
                     <div class="flex justify-between text-sm text-slate-600 mb-1">
                         <span>Subtotal</span>
                         <span>Rp {{ number_format($invoice->subtotal, 0, ',', '.') }}</span>
                     </div>
-                    <div class="flex justify-between text-sm text-slate-600 mb-2">
-                        <span>Diskon</span>
-                        <span class="text-red-500">- Rp {{ number_format($discount, 0, ',', '.') }}</span>
-                    </div>
+
                     <div class="flex justify-between text-base font-bold border-t border-indigo-200 pt-2">
                         <span class="text-slate-800">Total</span>
                         <span class="text-indigo-700">Rp {{ number_format($computedTotal, 0, ',', '.') }}</span>
@@ -128,7 +114,7 @@
                 <div>
                     <p class="text-sm font-medium text-slate-700 mb-2">Metode Pembayaran</p>
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                        @foreach(['cash' => 'Cash', 'transfer' => 'Transfer', 'debit' => 'Debit', 'qris' => 'QRIS'] as $value => $label)
+                        @foreach(['cash' => 'Cash', 'transfer' => 'Transfer'] as $value => $label)
                             <label class="flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg border text-sm font-medium cursor-pointer transition-colors
                                 {{ $paymentMethod === $value ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-slate-200 text-slate-600 hover:border-slate-300' }}">
                                 <input wire:model.live="paymentMethod" type="radio" value="{{ $value }}" class="sr-only">
@@ -137,17 +123,6 @@
                         @endforeach
                     </div>
                     @error('paymentMethod') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
-                </div>
-
-                {{-- Status pembayaran --}}
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Status Pembayaran</label>
-                    <select wire:model="paymentStatus"
-                        class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white @error('paymentStatus') border-red-400 @enderror">
-                        <option value="partially_paid">Bayar Sebagian</option>
-                        <option value="fully_paid">Lunas</option>
-                    </select>
-                    @error('paymentStatus') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
                 </div>
 
                 {{-- Actions --}}
